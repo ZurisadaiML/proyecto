@@ -1,20 +1,52 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title class="ion-text-center ion-title-bold"> Mis Tareas </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Input para registrar nueva tarea -->
+  <ion-item>
+    <ion-input type="text" placeholder="Nueva Tarea" name="task" [(ngModel)]="task" />
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+    <ion-button (click)="addTask()" [disabled]="!task">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-button>
+  </ion-item>
+
+  @if (tasks.length == 0) {
+    <ion-item class="ion-text-center" lines="none">
+      <ion-label>No hay tareas pendientes</ion-label>
+    </ion-item>
+  } @else {
+    <!-- IonList: Contenedor de elementos de lista -->
+    <ion-list>
+      <!-- IonReorderGroup: Activa la funcionalidad de arrastrar y reordenar -->
+      <ion-reorder-group [disabled]="false" (ionItemReorder)="handleReorder($event)">
+        
+        @for (t of tasks; track t){
+          <!-- ion-item-sliding permite deslizar el elemento -->
+          <ion-item-sliding #slidingItem>
+            
+            <ion-item>
+              <!-- Texto de la tarea -->
+              <ion-label>{{ t }}</ion-label>
+              <!-- Componente visual de Reorder -->
+              <ion-reorder slot="end"></ion-reorder>
+            </ion-item>
+
+            <!-- Opciones que aparecen al deslizar (lado derecho) -->
+            <ion-item-options side="end">
+              <ion-item-option color="danger" (click)="confirmDeleteTask(t); slidingItem.close()">
+                <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+                Eliminar
+              </ion-item-option>
+            </ion-item-options>
+
+          </ion-item-sliding>
+        }
+
+      </ion-reorder-group>
+    </ion-list>
+  }
 </ion-content>
